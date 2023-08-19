@@ -4,7 +4,8 @@
   margin: 0;
 }
 
-html, body {
+html,
+body {
   overflow-x: hidden;
   background-color: #000925;
 }
@@ -13,7 +14,8 @@ main {
   padding: 1rem;
 }
 
-h1, h2 {
+h1,
+h2 {
   color: #eee;
 }
 
@@ -55,6 +57,15 @@ li {
 .li-selected {
   color: #fff;
   background-color: #000925;
+}
+
+.green {
+  color: #fff;
+  background-color: green;
+}
+.red {
+  color: black;
+  background-color: red;
 }
 
 .container {

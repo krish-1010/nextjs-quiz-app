@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { quiz } from "../data.js";
 
 export default function Quiz() {
@@ -9,7 +9,14 @@ export default function Quiz() {
   const [selectedAnswerIndex, setSelectedAnswerIndex] = useState<null | number>(
     null
   );
+  const [answerCheckedAndCorrect, setAnswerCheckedAndCorrect] = useState<
+    null | boolean
+  >(null);
+
+  const ref = useRef<HTMLLIElement>(null);
   const [showResult, setShowResult] = useState(false);
+  const [color, setColor] = useState("");
+  const [currentAnswer, setCurrentAnswer] = useState("");
   const [result, setResult] = useState<{
     score: number;
     correctAnswers: number;
@@ -22,11 +29,21 @@ export default function Quiz() {
   const { questions } = quiz;
   const { question, answers, correctAnswer } = questions[activeQuestion];
   const onAnswerSelected = (answer: string, idx: number) => {
+    setAnswerCheckedAndCorrect(false);
     setChecked(true);
     setSelectedAnswerIndex(idx);
+    setCurrentAnswer(answer);
     answer === correctAnswer
       ? setSelectedAnswer(true)
       : setSelectedAnswer(false);
+  };
+
+  const checkAnswer = () => {
+    // console.log(currentAnswer);
+    currentAnswer === correctAnswer
+      ? setAnswerCheckedAndCorrect(true)
+      : setAnswerCheckedAndCorrect(false);
+    // ref.current?.className = "green";
   };
 
   const nextQuestion = () => {
@@ -66,19 +83,29 @@ export default function Quiz() {
             <h3>{questions[activeQuestion].question}</h3>
             {answers.map((answer, idx) => (
               <li
+                ref={ref}
                 key={idx}
                 onClick={() => onAnswerSelected(answer, idx)}
                 className={
-                  selectedAnswerIndex === idx ? "li-selected" : "li-hover"
+                  selectedAnswerIndex === idx
+                    ? answerCheckedAndCorrect
+                      ? "li-selected green"
+                      : "li-selected"
+                    : "li-hover"
                 }
               >
                 <span>{answer}</span>
               </li>
             ))}
             {checked ? (
-              <button onClick={() => nextQuestion()} className="btn">
-                {activeQuestion === question.length - 1 ? "Finish" : "Next"}
-              </button>
+              <div>
+                <button onClick={() => checkAnswer()} className="btn">
+                  Check Answer
+                </button>
+                <button onClick={() => nextQuestion()} className="btn">
+                  {activeQuestion === question.length - 1 ? "Finish" : "Next"}
+                </button>
+              </div>
             ) : (
               <button
                 onClick={() => nextQuestion()}
